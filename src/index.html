@@ -23,7 +23,8 @@
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
-        <div class="level-meta" id="btn-pack-switch">
+        <div class="level-meta" id="btn-pack-switch" role="button" tabindex="0" aria-label="Choose a level">
+          <span class="brand-wordmark">ZENSLIDE</span>
           <span class="pack-badge" id="hud-pack-name">Starter</span>
           <h1 class="level-title" id="hud-level-title">Level 1</h1>
         </div>
@@ -56,7 +57,7 @@
         <span class="metric-value highlight" id="hud-moves">0</span>
       </div>
       <div class="metric-card">
-        <span class="metric-label">Best Target</span>
+        <span class="metric-label">Optimal</span>
         <span class="metric-value" id="hud-target">4</span>
       </div>
       <div class="metric-card">
@@ -70,15 +71,19 @@
     </section>
 
     <!-- Board Arena -->
-    <main class="board-area">
+    <main class="board-area" aria-label="Puzzle">
+      <div class="board-copy">
+        <span class="board-kicker">FIND THE CLEAR PATH</span>
+        <p>Slide the crimson key to the exit.</p>
+      </div>
       <div class="board-wrapper" id="board-wrapper">
-        <canvas id="slide-canvas"></canvas>
+        <canvas id="slide-canvas" role="img" aria-label="Sliding block puzzle board. Slide the crimson key to the exit."></canvas>
       </div>
     </main>
 
     <!-- Bottom Actions Toolbar -->
     <footer class="bottom-toolbar">
-      <button id="btn-prev" class="action-btn" title="Previous Level">
+      <button id="btn-prev" class="action-btn" title="Previous Level" aria-label="Previous level">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
@@ -111,7 +116,7 @@
         </svg>
         <span>Hint</span>
       </button>
-      <button id="btn-next" class="action-btn" title="Next Level">
+      <button id="btn-next" class="action-btn" title="Next Level" aria-label="Next level">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
@@ -119,7 +124,7 @@
     </footer>
 
     <!-- Victory Modal -->
-    <div id="modal-victory" class="modal-backdrop hidden">
+    <div id="modal-victory" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="victory-heading">
       <div class="modal-card victory-card">
         <canvas id="confetti-canvas"></canvas>
         <div class="stars-row" id="victory-stars">
@@ -153,15 +158,15 @@
     </div>
 
     <!-- Level Select Modal -->
-    <div id="modal-levels" class="modal-backdrop hidden">
+    <div id="modal-levels" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="levels-heading">
       <div class="modal-card full-card">
         <div class="modal-header">
-          <h2>Select Level</h2>
-          <button id="btn-close-levels" class="icon-btn close-btn">✕</button>
+          <h2 id="levels-heading">Select Level</h2>
+          <button id="btn-close-levels" class="icon-btn close-btn" aria-label="Close level selection">✕</button>
         </div>
 
         <!-- Pack Tabs -->
-        <div class="pack-tabs" id="pack-tabs-container"></div>
+        <div class="pack-tabs" id="pack-tabs-container" role="tablist" aria-label="Difficulty packs"></div>
 
         <!-- Level Grid -->
         <div class="levels-grid" id="levels-grid-container"></div>
@@ -169,11 +174,11 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="modal-settings" class="modal-backdrop hidden">
+    <div id="modal-settings" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settings-heading">
       <div class="modal-card">
         <div class="modal-header">
-          <h2>Settings</h2>
-          <button id="btn-close-settings" class="icon-btn close-btn">✕</button>
+          <h2 id="settings-heading">Settings</h2>
+          <button id="btn-close-settings" class="icon-btn close-btn" aria-label="Close settings">✕</button>
         </div>
 
         <div class="settings-list">

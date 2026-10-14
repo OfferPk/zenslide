@@ -185,6 +185,13 @@
     hudLevelTitle.textContent = `Level ${currentLevelIdx + 1}`;
     hudMoves.textContent = String(game.moves);
     hudTarget.textContent = String(game.minMoves);
+    canvas.setAttribute(
+      'aria-label',
+      `${hudPackName.textContent} pack, level ${currentLevelIdx + 1}. ${game.moves} moves. Slide the crimson key to the exit.`
+    );
+    btnUndo.disabled = game.undoStack.length === 0;
+    btnReset.disabled = game.moves === 0;
+    btnHint.disabled = isLevelWon;
 
     // Dynamic expected star rating
     let starCount = 3;
@@ -238,18 +245,31 @@
 
   function drawGrid() {
     const pad = 3;
+    ctx.save();
+    ctx.fillStyle = '#0a1a23';
+    ctx.strokeStyle = 'rgba(164, 218, 207, 0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(0.5, 0.5, boardSize - 1, boardSize - 1, 18);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
     for (let r = 0; r < 6; r++) {
       for (let c = 0; c < 6; c++) {
         const x = c * cellSize + pad;
         const y = r * cellSize + pad;
         const s = cellSize - pad * 2;
 
-        ctx.fillStyle = '#111827';
+        const slotGradient = ctx.createLinearGradient(x, y, x + s, y + s);
+        slotGradient.addColorStop(0, '#142b35');
+        slotGradient.addColorStop(1, '#0e222c');
+        ctx.fillStyle = slotGradient;
         ctx.beginPath();
         ctx.roundRect(x, y, s, s, 10);
         ctx.fill();
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+        ctx.strokeStyle = 'rgba(166, 220, 208, 0.08)';
         ctx.lineWidth = 1;
         ctx.stroke();
       }
@@ -264,9 +284,9 @@
     const w = 5;
 
     ctx.save();
-    ctx.fillStyle = '#FF3B30';
-    ctx.shadowColor = '#FF3B30';
-    ctx.shadowBlur = 12;
+    ctx.fillStyle = '#ff7568';
+    ctx.shadowColor = '#ff7568';
+    ctx.shadowBlur = 15;
     ctx.beginPath();
     ctx.roundRect(x, y, w, h, 3);
     ctx.fill();
@@ -306,7 +326,11 @@
       }
 
       // Block Body
-      ctx.fillStyle = b.color;
+      const blockGradient = ctx.createLinearGradient(x, y, x + bw, y + bh);
+      blockGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+      blockGradient.addColorStop(0.34, b.color);
+      blockGradient.addColorStop(1, isKey ? '#df4b46' : b.color);
+      ctx.fillStyle = blockGradient;
       ctx.beginPath();
       ctx.roundRect(x, y, bw, bh, 12);
       ctx.fill();
@@ -461,6 +485,7 @@
     if (isLevelWon) return;
     isLevelWon = true;
     clearInterval(timerInterval);
+    updateHUD();
 
     const stars = game.getStars();
     const isPerfect = stars === 3;
@@ -550,6 +575,7 @@
     renderPackTabs();
     renderLevelsGrid();
     modalLevels.classList.remove('hidden');
+    btnCloseLevels.focus();
   }
 
   function renderPackTabs() {
@@ -558,6 +584,8 @@
       const btn = document.createElement('button');
       btn.className = `pack-tab ${pack.id === currentPackId ? 'active' : ''}`;
       btn.textContent = pack.name;
+      btn.setAttribute('aria-selected', String(pack.id === currentPackId));
+      btn.setAttribute('role', 'tab');
       btn.style.setProperty('--tab-accent', pack.color);
       btn.addEventListener('click', () => {
         currentPackId = pack.id;
@@ -584,6 +612,10 @@
         <span class="lvl-num">${idx + 1}</span>
         <span class="lvl-stars">${'★'.repeat(saved.stars || 0)}${'☆'.repeat(3 - (saved.stars || 0))}</span>
       `;
+      btn.setAttribute('aria-label', `Level ${idx + 1}, ${saved.stars || 0} of 3 stars`);
+      if (idx === currentLevelIdx && lvl.packId === currentPackId) {
+        btn.setAttribute('aria-current', 'page');
+      }
 
       btn.addEventListener('click', () => {
         audio.playTap();
@@ -603,11 +635,13 @@
       iconSoundOn.classList.add('hidden');
       iconSoundOff.classList.remove('hidden');
     }
+    btnSound.setAttribute('aria-pressed', String(audio.enabled));
   }
 
   function openSettings() {
     toggleHaptics.checked = userSettings.haptics;
     modalSettings.classList.remove('hidden');
+    btnCloseSettings.focus();
   }
 
   // --- Event Listeners ---
@@ -635,9 +669,17 @@
       audio.playTap();
       openLevelSelect();
     });
+    btnPackSwitch.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        audio.playTap();
+        openLevelSelect();
+      }
+    });
     btnCloseLevels.addEventListener('click', () => {
       audio.playTap();
       modalLevels.classList.add('hidden');
+      btnMenu.focus();
     });
 
     btnSettings.addEventListener('click', () => {
@@ -647,6 +689,7 @@
     btnCloseSettings.addEventListener('click', () => {
       audio.playTap();
       modalSettings.classList.add('hidden');
+      btnSettings.focus();
     });
 
     // Toolbar buttons
@@ -738,6 +781,18 @@
 
     // Keyboard controls
     window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (!modalLevels.classList.contains('hidden')) {
+          modalLevels.classList.add('hidden');
+          btnMenu.focus();
+        } else if (!modalSettings.classList.contains('hidden')) {
+          modalSettings.classList.add('hidden');
+          btnSettings.focus();
+        }
+        return;
+      }
+      if (isLevelWon || !modalLevels.classList.contains('hidden') || !modalSettings.classList.contains('hidden')) return;
+      if (e.target && ['BUTTON', 'INPUT'].includes(e.target.tagName)) return;
       if (e.key === 'u' || e.key === 'z') {
         if (game.undo()) {
           audio.playTap();
