@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#090D16" />
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" />
+
+  <!-- Board Area (Inner 6x6 grid mockup) -->
+  <rect x="56" y="56" width="400" height="400" rx="36" fill="#111827" stroke="rgba(255,255,255,0.06)" stroke-width="3" />
+
+  <!-- Exit Gate Marker -->
+  <rect x="446" y="196" width="16" height="60" rx="6" fill="#FF3B30" filter="url(#glow)" />
+
+  <!-- Key Red Block (Horizontal, row 2) -->
+  <rect x="126" y="196" width="120" height="56" rx="14" fill="#FF3B30" filter="url(#glow)" />
+  <rect x="132" y="202" width="108" height="44" rx="10" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" />
+  <!-- Arrow on Key Block -->
+  <path d="M 180 224 L 205 224 M 198 217 L 205 224 L 198 231" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Obstacle Block: Cyan Vertical (r:0, c:3) -->
+  <rect x="256" y="66" width="56" height="186" rx="14" fill="#00C7BE" filter="url(#glow)" />
+
+  <!-- Obstacle Block: Purple Horizontal (r:0, c:0) -->
+  <rect x="66" y="66" width="120" height="56" rx="14" fill="#AF52DE" />
+
+  <!-- Obstacle Block: Amber Vertical (r:3, c:1) -->
+  <rect x="126" y="262" width="56" height="120" rx="14" fill="#FF9500" />
+
+  <!-- Obstacle Block: Green Horizontal (r:4, c:3) -->
+  <rect x="256" y="328" width="186" height="56" rx="14" fill="#34C759" />
+
+  <!-- Obstacle Block: Blue Vertical (r:1, c:5) -->
+  <rect x="386" y="131" width="56" height="120" rx="14" fill="#007AFF" />
+</svg>

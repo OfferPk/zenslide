@@ -1,0 +1,9 @@
+{
+  "appId": "pk.offer.zenslide",
+  "appName": "ZenSlide",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "backgroundColor": "#090D16"
+  }
+}
